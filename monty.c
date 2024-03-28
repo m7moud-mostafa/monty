@@ -60,7 +60,6 @@ void execute_line(char *line, stack_t **stack, unsigned int line_number)
 {
 	char *opcode;
 	char *arg;
-	int num;
 
 	opcode = strtok(line, " \n");
 	arg = strtok(NULL, " \n");
@@ -68,22 +67,17 @@ void execute_line(char *line, stack_t **stack, unsigned int line_number)
 	if (opcode == NULL)
 		return;
 
-	/* Implement opcode handling here, like push, pall, etc. */
 	if (strcmp(opcode, "push") == 0)
 	{
-		num = atoi(arg);
-		if (arg == NULL || (arg[0] != '0' && num == 0))
-		{
-			fprintf(stderr, "L%d: usage: push integer\\n", line_number);
-			exit(EXIT_FAILURE);
-		}
-		push(stack, num);
+		push(stack, arg, line_number);
 	}
 	else if (strcmp(opcode, "pall") == 0)
 	{
 		pall(stack, line_number);
 	}
+
 }
+
 
 /**
  * pall - Prints all the values on the stack
@@ -100,7 +94,7 @@ void pall(stack_t **stack, unsigned int line_number)
 
 	while (temp != NULL)
 	{
-		printf("%d\n", temp->n);
+		printf("%d\\n", temp->n);
 		temp = temp->next;
 	}
 }
@@ -109,21 +103,29 @@ void pall(stack_t **stack, unsigned int line_number)
  * push - Pushes an element to the stack
  * @stack: Double pointer to the top of the stack
  * @line_number: Line number of the current operation
- *
+ * @arg: argument
  * Description: Pushes an integer onto the stack
  */
-void push(stack_t **stack, unsigned int line_number)
+void push(stack_t **stack, char *arg, unsigned int line_number)
 {
+	int num;
 	stack_t *new_node;
+
+	num = atoi(arg);
+	if (arg == NULL || (arg[0] != '0' && num == 0))
+	{
+		fprintf(stderr, "L%d: usage: push integer\\n", line_number);
+		exit(EXIT_FAILURE);
+	}
 
 	new_node = malloc(sizeof(stack_t));
 	if (new_node == NULL)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
+		fprintf(stderr, "Error: malloc failed\\n");
 		exit(EXIT_FAILURE);
 	}
 
-	new_node->n = line_number;
+	new_node->n = num;
 	new_node->prev = NULL;
 	new_node->next = *stack;
 
