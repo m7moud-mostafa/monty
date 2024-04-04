@@ -135,6 +135,9 @@ void push(stack_t **stack, char *arg, unsigned int line_number)
 
 	for (i = 0; arg[i] != '\0'; i++)
 	{
+		if (i == 0 && arg[i] =='-')
+			continue;
+
 		if (!(arg[i] >= '0' && arg[i] <= '9'))
 		{
 			fprintf(stderr, "L%i: usage: push integer\n", line_number);
