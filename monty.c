@@ -125,11 +125,21 @@ void push(stack_t **stack, char *arg, unsigned int line_number)
 {
 	int int_arg;
 	stack_t *h;
+	int i;
 
 	if (!arg)
 	{
 		fprintf(stderr, "L%i: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
+	}
+
+	for (i = 0; arg[i] != '\0'; i++)
+	{
+		if (!(arg[i] >= '0' && arg[i] <= '9'))
+		{
+			fprintf(stderr, "L%i: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	int_arg = atoi(arg);
