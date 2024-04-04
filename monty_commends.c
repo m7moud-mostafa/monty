@@ -55,3 +55,30 @@ void pop(stack_t **stack, unsigned int line_number)
 		(*stack)->prev = NULL;
 	free(tmp);
 }
+
+/**
+ * swap - sqaps top two elements in the slack
+ * @stack: Double pointer to the top of the stack
+ * @line_number: Line number of the current operation
+ */
+void swap(stack_t **stack, unsigned int line_number)
+{
+	stack_t *tmp;
+
+	if (!stack || !(*stack) || ((*stack)->next))
+	{
+		fprintf(stderr, "L%i: can't pop an empty stack\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	tmp = *stack;
+	*stack = (*stack)->next;
+	tmp->next = (*stack)->next;
+	(*stack)->prev = tmp;
+	tmp->prev = NULL;
+	(*stack)->next = tmp;
+
+	if (tmp->next)
+		tmp->next->prev = tmp;
+
+}
