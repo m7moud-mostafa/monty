@@ -66,6 +66,7 @@ int execute_line(char *line, unsigned int line_number, stack_t **stack)
 								{"pop", pop},
 								{"swap", swap},
 								{"add", add},
+								{"nop", nop},
 								{NULL, NULL}
 	};
 
