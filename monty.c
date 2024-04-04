@@ -9,36 +9,34 @@
  */
 int main(int argc, char **argv)
 {
-	FILE *file;
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t read;
+	char line[MAX_LINE_LENGTH];
+	FILE *stream;
 	unsigned int line_number = 0;
 	stack_t *stack = NULL;
 
+
 	if (argc != 2)
 	{
-		fprintf(stderr, "USAGE: monty file\\n");
+		printf("USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 
-	file = fopen(argv[1], "r");
-	if (!file)
+	stream = fopen(argv[1], "r");
+	if (stream == NULL)
 	{
-		fprintf(stderr, "Error: Can't open file %s\\n", argv[1]);
+		printf("Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
 
-	while ((read = getline(&line, &len, file)) != -1)
+	while (fgets(line, sizeof(line), stream) != NULL)
 	{
+		/* Here write the code to execute the line */
+		execute_line(line, line_number, &stack);
 		line_number++;
-		execute_line(line, &stack, line_number);
 	}
 
-	free(line);
-	fclose(file);
+	fclose(stream);
 
-	/* Free stack */
 	while (stack != NULL)
 	{
 		stack_t *temp = stack;
@@ -55,27 +53,41 @@ int main(int argc, char **argv)
  * @line: Line from the file
  * @stack: Double pointer to the top of the stack
  * @line_number: Current line number
+ * Return: -1 when failure
  */
-void execute_line(char *line, stack_t **stack, unsigned int line_number)
+int execute_line(char *line, unsigned int line_number, stack_t **stack)
 {
 	char *opcode;
 	char *arg;
+	int i = 0;
+	instruction_t instructions[] = {
+								{"pall", pall},
+								{NULL, NULL}
+	};
 
 	opcode = strtok(line, " \n");
 	arg = strtok(NULL, " \n");
 
 	if (opcode == NULL)
-		return;
+		return (0);
 
 	if (strcmp(opcode, "push") == 0)
 	{
 		push(stack, arg, line_number);
-	}
-	else if (strcmp(opcode, "pall") == 0)
-	{
-		pall(stack, line_number);
+		return (0);
 	}
 
+	while (instructions[i].opcode != NULL)
+	{
+		if (strcmp(instructions[i].opcode, opcode) == 0)
+		{
+			instructions[i].f(stack, line_number);
+			return (0);
+		}
+		i++;
+	}
+	printf("L%i: unknown instruction %s\n", line_number, opcode);
+	exit(EXIT_FAILURE);
 }
 
 
@@ -88,14 +100,17 @@ void execute_line(char *line, stack_t **stack, unsigned int line_number)
  */
 void pall(stack_t **stack, unsigned int line_number)
 {
-	stack_t *temp = *stack;
+	stack_t *ptr;
 
 	(void)line_number;
+	if (!stack || !(*stack))
+		return;
 
-	while (temp != NULL)
+	ptr = *stack;
+	while (ptr)
 	{
-		printf("%d\\n", temp->n);
-		temp = temp->next;
+		printf("%i\n", ptr->n);
+		ptr = ptr->next;
 	}
 }
 
@@ -108,29 +123,34 @@ void pall(stack_t **stack, unsigned int line_number)
  */
 void push(stack_t **stack, char *arg, unsigned int line_number)
 {
-	int num;
-	stack_t *new_node;
+	int int_arg;
+	stack_t *h;
 
-	num = atoi(arg);
-	if (arg == NULL || (arg[0] != '0' && num == 0))
+	if (!arg)
 	{
-		fprintf(stderr, "L%d: usage: push integer\\n", line_number);
+		printf("L%i: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 
-	new_node = malloc(sizeof(stack_t));
-	if (new_node == NULL)
+	int_arg = atoi(arg);
+	if (int_arg == 0 && arg[0] != '0')
 	{
-		fprintf(stderr, "Error: malloc failed\\n");
+		printf("L%i: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 
-	new_node->n = num;
-	new_node->prev = NULL;
-	new_node->next = *stack;
-
+	h = malloc(sizeof(stack_t));
+	if (!h)
+	{
+		printf("Error: malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
+	h->n = int_arg;
+	h->prev = NULL;
+	h->next = *stack;
 	if (*stack != NULL)
-		(*stack)->prev = new_node;
-
-	*stack = new_node;
+	{
+		(*stack)->prev = h;
+	}
+	*stack = h;
 }
