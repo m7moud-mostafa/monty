@@ -62,6 +62,7 @@ int execute_line(char *line, unsigned int line_number, stack_t **stack)
 	int i = 0;
 	instruction_t instructions[] = {
 								{"pall", pall},
+								{"pint", pint},
 								{NULL, NULL}
 	};
 
@@ -162,4 +163,21 @@ void push(stack_t **stack, char *arg, unsigned int line_number)
 		(*stack)->prev = h;
 
 	*stack = h;
+}
+
+/**
+ * pint - Prints the top value in the stack
+ * @stack: Double pointer to the top of the stack
+ * @line_number: Line number of the current operation (unused)
+ *
+ * Description: Prints the top value
+ */
+void pint(stack_t **stack, unsigned int line_number)
+{
+	if (*stack == NULL || !stack)
+	{
+		fprintf(stderr, "L%i: can't pint, stack empty\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	printf("%i\n", (*stack)->n);
 }
