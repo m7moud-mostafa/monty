@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
 	char line[MAX_LINE_LENGTH];
 	FILE *stream;
-	unsigned int line_number = 0;
+	unsigned int line_number = 1;
 	stack_t *stack = NULL;
 
 
