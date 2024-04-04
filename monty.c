@@ -135,23 +135,20 @@ void push(stack_t **stack, char *arg, unsigned int line_number)
 
 	for (i = 0; arg[i] != '\0'; i++)
 	{
-		if (i == 0 && arg[i] =='-')
+		if (i == 0 && arg[i] == '-')
 			continue;
-
 		if (!(arg[i] >= '0' && arg[i] <= '9'))
 		{
 			fprintf(stderr, "L%i: usage: push integer\n", line_number);
 			exit(EXIT_FAILURE);
 		}
 	}
-
 	int_arg = atoi(arg);
 	if (int_arg == 0 && arg[0] != '0')
 	{
 		fprintf(stderr, "L%i: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-
 	h = malloc(sizeof(stack_t));
 	if (!h)
 	{
@@ -162,8 +159,7 @@ void push(stack_t **stack, char *arg, unsigned int line_number)
 	h->prev = NULL;
 	h->next = *stack;
 	if (*stack != NULL)
-	{
 		(*stack)->prev = h;
-	}
+
 	*stack = h;
 }
