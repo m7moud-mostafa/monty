@@ -102,3 +102,15 @@ void add(stack_t **stack, unsigned int line_number)
 	pop(stack, line_number);
 
 }
+
+
+/**
+ * nop - does no thing
+ * @stack: Double pointer to the top of the stack
+ * @line_number: Line number of the current operation
+ */
+void nop(stack_t **stack, unsigned int line_number)
+{
+	(void)line_number;
+	(void)(stack);
+}
