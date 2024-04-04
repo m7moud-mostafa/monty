@@ -45,7 +45,7 @@ void pop(stack_t **stack, unsigned int line_number)
 
 	if (!stack || !(*stack))
 	{
-		fprintf(stderr, "L%i: can't pop an empty stack", line_number);
+		fprintf(stderr, "L%i: can't pop an empty stack\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 
