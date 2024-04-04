@@ -17,14 +17,14 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		printf("USAGE: monty file\n");
+		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 
 	stream = fopen(argv[1], "r");
 	if (stream == NULL)
 	{
-		printf("Error: Can't open file %s\n", argv[1]);
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
 
@@ -86,7 +86,7 @@ int execute_line(char *line, unsigned int line_number, stack_t **stack)
 		}
 		i++;
 	}
-	printf("L%i: unknown instruction %s\n", line_number, opcode);
+	fprintf(stderr, "L%i: unknown instruction %s\n", line_number, opcode);
 	exit(EXIT_FAILURE);
 }
 
@@ -128,21 +128,21 @@ void push(stack_t **stack, char *arg, unsigned int line_number)
 
 	if (!arg)
 	{
-		printf("L%i: usage: push integer\n", line_number);
+		fprintf(stderr, "L%i: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 
 	int_arg = atoi(arg);
 	if (int_arg == 0 && arg[0] != '0')
 	{
-		printf("L%i: usage: push integer\n", line_number);
+		fprintf(stderr, "L%i: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
 
 	h = malloc(sizeof(stack_t));
 	if (!h)
 	{
-		printf("Error: malloc failed\n");
+		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 	h->n = int_arg;
